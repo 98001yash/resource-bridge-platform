@@ -66,7 +66,6 @@ public class AuthenticationFilter
 
             try {
 
-
                 String userId =
                         jwtService.getUserIdFromToken(token);
 
