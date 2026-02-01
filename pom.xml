@@ -46,6 +46,7 @@
     <modules>
         <!-- Services will be added here -->
         <module>discovery-server</module>
+        <module>auth-service</module>
     </modules>
 
 </project>
