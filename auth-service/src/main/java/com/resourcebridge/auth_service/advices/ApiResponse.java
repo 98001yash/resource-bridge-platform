@@ -25,4 +25,13 @@ public class ApiResponse<T> {
         this();
         this.error = error;
     }
+
+
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>(data);
+    }
+
+    public static <T> ApiResponse<T> failure(ApiError error) {
+        return new ApiResponse<>(error);
+    }
 }

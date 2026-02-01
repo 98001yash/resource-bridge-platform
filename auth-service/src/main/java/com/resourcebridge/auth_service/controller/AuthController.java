@@ -1,6 +1,7 @@
 package com.resourcebridge.auth_service.controller;
 
 
+import com.resourcebridge.auth_service.advices.ApiResponse;
 import com.resourcebridge.auth_service.dtos.*;
 import com.resourcebridge.auth_service.dtos.UserResponseDto;
 import com.resourcebridge.auth_service.service.AuthService;
@@ -64,7 +65,12 @@ public class AuthController {
 
 
     @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Auth Service is UP 🚀");
+    public ResponseEntity<ApiResponse<String>> health() {
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Auth Service is UP 🚀")
+        );
     }
+
+
 }
