@@ -45,6 +45,7 @@
 
     <modules>
         <!-- Services will be added here -->
+        <module>discovery-server</module>
     </modules>
 
 </project>
