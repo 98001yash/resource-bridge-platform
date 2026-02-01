@@ -158,4 +158,23 @@ public class AuthService {
 
         return modelMapper.map(user, UserResponseDto.class);
     }
+
+    // verify user
+    public void verifyUser(Long userId){
+        log.info("Verification request for UserId={}",userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->
+                        new ResourceNotFoundException("User  not found"));
+
+        if(user.isVerified()){
+            log.warn("User already verified | userId={}",userId);
+            return;
+        }
+
+        user.setVerified(true);
+        userRepository.save(user);
+
+        log.info("User verified successfully | userId={}",userId);
+    }
 }
