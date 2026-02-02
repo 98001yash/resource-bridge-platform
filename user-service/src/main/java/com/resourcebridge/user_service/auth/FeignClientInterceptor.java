@@ -6,17 +6,43 @@ import feign.RequestTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FeignClientInterceptor implements RequestInterceptor {
-
-
+public class FeignClientInterceptor
+        implements RequestInterceptor {
 
     @Override
-    public void apply(RequestTemplate requestTemplate) {
-        Long userId= UserContextHolder.getCurrentUserId();
+    public void apply(RequestTemplate template) {
 
-        if(userId!=null){
-            requestTemplate.header("X-User-Id",userId.toString());
+        Long userId =
+                UserContextHolder.getCurrentUserId();
+
+        String role =
+                UserContextHolder.getCurrentRole();
+
+        Boolean verified =
+                UserContextHolder.isVerified();
+
+        if (userId != null) {
+
+            template.header(
+                    AuthConstants.USER_ID,
+                    userId.toString()
+            );
         }
 
+        if (role != null) {
+
+            template.header(
+                    AuthConstants.ROLE,
+                    role
+            );
+        }
+
+        if (verified != null) {
+
+            template.header(
+                    AuthConstants.VERIFIED,
+                    verified.toString()
+            );
+        }
     }
 }

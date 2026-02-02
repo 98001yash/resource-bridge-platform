@@ -10,15 +10,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private UserInterceptor userInterceptor;
+    private final UserInterceptor userInterceptor;
+    private final RoleInterceptor roleInterceptor;
 
-    @Autowired
-    private RoleInterceptor roleInterceptor;
+    public WebConfig(UserInterceptor userInterceptor,
+                     RoleInterceptor roleInterceptor) {
+
+        this.userInterceptor = userInterceptor;
+        this.roleInterceptor = roleInterceptor;
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userInterceptor);
-        registry.addInterceptor(roleInterceptor);
+
+        registry.addInterceptor(userInterceptor)
+                .order(1);
+
+        registry.addInterceptor(roleInterceptor)
+                .order(2);
     }
 }

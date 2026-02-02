@@ -1,38 +1,58 @@
 package com.resourcebridge.user_service.auth;
 
-
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.Arrays;
-
+@Slf4j
 @Component
 public class UserInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response,
+                             Object handler) {
 
-        String userId = request.getHeader("X-User-Id");
-        String roles = request.getHeader("X-User-Roles"); // comma-separated roles
+        String userId =
+                request.getHeader(AuthConstants.USER_ID);
 
-        if (userId != null) {
-            UserContextHolder.setCurrentUserId(Long.valueOf(userId));
+        String role =
+                request.getHeader(AuthConstants.ROLE);
+
+        String verified =
+                request.getHeader(AuthConstants.VERIFIED);
+
+        if (userId == null || role == null) {
+
+            log.warn("Missing auth headers");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
         }
 
-        if (roles != null) {
-            String[] rolesArray = roles.split(",");
-            UserContextHolder.setCurrentUserRoles(Arrays.asList(rolesArray)); // store properly
+        UserContextHolder.setUserId(Long.parseLong(userId));
+        UserContextHolder.setRole(role);
+
+        if (verified != null) {
+            UserContextHolder.setVerified(
+                    Boolean.parseBoolean(verified)
+            );
         }
 
+        log.debug("Context set | id={} | role={}",
+                userId, role);
 
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request,
+                                HttpServletResponse response,
+                                Object handler,
+                                Exception ex) {
+
         UserContextHolder.clear();
     }
 }

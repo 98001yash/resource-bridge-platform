@@ -1,6 +1,5 @@
 package com.resourcebridge.user_service.auth;
 
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +8,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -17,41 +15,51 @@ import java.util.Set;
 public class RoleInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (!(handler instanceof HandlerMethod)) {
-            return true; // allow non-controller requests
-        }
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response,
+                             Object handler)
+            throws Exception {
 
-        HandlerMethod method = (HandlerMethod) handler;
-        RoleAllowed roleAllowed = method.getMethodAnnotation(RoleAllowed.class);
-
-        // If method doesn't have @RoleAllowed, check at class level
-        if (roleAllowed == null) {
-            roleAllowed = method.getBeanType().getAnnotation(RoleAllowed.class);
-        }
-
-        // No role restriction, allow access
-        if (roleAllowed == null) {
+        if (!(handler instanceof HandlerMethod method)) {
             return true;
         }
 
-        String rolesHeader = String.valueOf(UserContextHolder.getCurrentUserRoles());
-        if (rolesHeader == null) {
+        RoleAllowed allowed =
+                method.getMethodAnnotation(RoleAllowed.class);
+
+        if (allowed == null) {
+            allowed =
+                    method.getBeanType()
+                            .getAnnotation(RoleAllowed.class);
+        }
+
+        if (allowed == null) {
+            return true; // no restriction
+        }
+
+        String userRole =
+                UserContextHolder.getCurrentRole();
+
+        if (userRole == null) {
+
+            log.warn("No role in context");
+
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            log.warn("Access denied: No roles found for user");
             return false;
         }
 
-        Set<String> userRoles = new HashSet<>(UserContextHolder.getCurrentUserRoles());
-        Set<String> allowedRoles = new HashSet<>(Arrays.asList(roleAllowed.value()));
+        Set<String> allowedRoles =
+                Set.of(allowed.value());
 
-        boolean hasAccess = userRoles.stream().anyMatch(allowedRoles::contains);
+        if (!allowedRoles.contains(userRole)) {
 
-        if (!hasAccess) {
+            log.warn("Access denied | role={} | allowed={}",
+                    userRole, allowedRoles);
+
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            log.warn("Access denied: User roles {} do not match required roles {}", userRoles, allowedRoles);
+            return false;
         }
 
-        return hasAccess;
+        return true;
     }
 }

@@ -1,33 +1,51 @@
 package com.resourcebridge.user_service.auth;
 
-import java.util.List;
+public final class UserContextHolder {
 
-public class UserContextHolder {
+    private static final ThreadLocal<Long> USER_ID =
+            new ThreadLocal<>();
 
-    private static  final ThreadLocal<Long> currentUserId = new ThreadLocal<>();
-    private static final ThreadLocal<List<String>> currentUserRoles = new ThreadLocal<>();
+    private static final ThreadLocal<String> ROLE =
+            new ThreadLocal<>();
 
-    public static Long getCurrentUserId(){
-        return currentUserId.get();
+    private static final ThreadLocal<Boolean> VERIFIED =
+            new ThreadLocal<>();
+
+    private UserContextHolder() {}
+
+    /* ========== SET ========== */
+
+    static void setUserId(Long id) {
+        USER_ID.set(id);
     }
-    static void setCurrentUserId(Long userId){
-        currentUserId.set(userId);
+
+    static void setRole(String role) {
+        ROLE.set(role);
     }
 
-
-    public static List<String> getCurrentUserRoles() {
-        return currentUserRoles.get();
+    static void setVerified(Boolean verified) {
+        VERIFIED.set(verified);
     }
 
-    static void setCurrentUserRoles(List<String> roles) {
+    /* ========== GET ========== */
 
-
-        currentUserRoles.set(roles);
+    public static Long getCurrentUserId() {
+        return USER_ID.get();
     }
+
+    public static String getCurrentRole() {
+        return ROLE.get();
+    }
+
+    public static Boolean isVerified() {
+        return VERIFIED.get();
+    }
+
+    /* ========== CLEAR ========== */
 
     static void clear() {
-        currentUserId.remove();
-        currentUserRoles.remove(); // <-- Add this line
+        USER_ID.remove();
+        ROLE.remove();
+        VERIFIED.remove();
     }
-
 }
