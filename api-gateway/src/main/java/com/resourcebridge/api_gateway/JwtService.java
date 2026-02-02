@@ -46,7 +46,7 @@ public class JwtService {
 
         System.out.println("JWT Claims: " + claims);
 
-        Object rolesObj = claims.get("roles");
+        Object rolesObj = claims.get("role");
         if (rolesObj == null) {
             throw new RuntimeException("Missing roles claim in JWT");
         }
