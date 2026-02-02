@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="common-events" />
         <module name="discovery-server" />
       </profile>
       <profile name="Annotation profile for Resource Bridge Platform" enabled="true">

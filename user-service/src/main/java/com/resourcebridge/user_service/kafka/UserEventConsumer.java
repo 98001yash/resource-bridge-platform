@@ -60,10 +60,12 @@ public class UserEventConsumer {
         UserProfile profile = UserProfile.builder()
                 .userId(event.getUserId())
                 .email(event.getEmail())
+                .fullName(event.getFullName())
                 .role(event.getRole())
                 .verified(event.getVerified())
                 .active(event.getEnabled())
                 .build();
+
 
         profileRepository.save(profile);
 

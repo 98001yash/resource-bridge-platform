@@ -1,12 +1,20 @@
 package com.resourcebridge.events;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.UUID;
+
 @Data
-public class AdminVerificationEvent extends BaseEvent {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class AdminVerificationEvent implements Serializable {
+
+    private String eventId;
+    private Instant timestamp;
+    private String source;
 
     private EventType eventType;
 
@@ -19,23 +27,4 @@ public class AdminVerificationEvent extends BaseEvent {
     private String remarks;
 
     private Boolean verified;
-
-    @Builder
-    public AdminVerificationEvent(
-            String source,
-            EventType eventType,
-            Long userId,
-            String adminId,
-            AdminActionType action,
-            String remarks,
-            Boolean verified
-    ) {
-        super(source);
-        this.eventType = eventType;
-        this.userId = userId;
-        this.adminId = adminId;
-        this.action = action;
-        this.remarks = remarks;
-        this.verified = verified;
-    }
 }

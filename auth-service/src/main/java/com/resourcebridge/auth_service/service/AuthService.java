@@ -90,11 +90,11 @@ public class AuthService {
                     .eventType(EventType.USER_CREATED)
                     .userId(saved.getId())
                     .email(saved.getEmail())
+                    .fullName(saved.getName())
                     .role(saved.getRole().name())
                     .verified(saved.isVerified())
                     .enabled(saved.isEnabled())
                     .build();
-
             userEventProducer.sendUserEvent(userCreatedEvent);
 
             log.info("USER_CREATED event published | userId={}",
@@ -211,6 +211,7 @@ public class AuthService {
                 .email(user.getEmail())
                 .role(user.getRole().name())
                 .verified(true)
+                .fullName(user.getName())
                 .enabled(user.isEnabled())
                 .build();
 
