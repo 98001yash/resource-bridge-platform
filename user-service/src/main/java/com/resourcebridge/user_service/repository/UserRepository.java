@@ -10,7 +10,7 @@ public interface UserRepository extends JpaRepository<UserProfile,Long> {
 
 
     Optional<UserProfile> findByUserId(Long userId);
-    boolean existsById(Long userId);
+    boolean existsByUserId(Long userId);
 
     Optional<UserProfile> findByEmail(String email);
 
@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<UserProfile,Long> {
 
     // admin
     List<UserProfile> findByRoleAndVerified(String role, boolean verified);
+
+
 }
