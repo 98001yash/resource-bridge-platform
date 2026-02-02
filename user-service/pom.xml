@@ -84,6 +84,11 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.resourcebridge</groupId>
+			<artifactId>common-events</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 
 	</dependencies>
