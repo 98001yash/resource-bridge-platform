@@ -81,7 +81,7 @@ public class UserProfileService {
         return userRepository.findByRole(role);
     }
 
-    public List<UserProfile> getVerified(String role){
+    public List<UserProfile> getUnverified(String role){
         log.info("Fetching unverified users | role={}",role);
 
         return userRepository.findByRoleAndVerified(role, false);
