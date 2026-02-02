@@ -134,6 +134,14 @@
 			<version>20240303</version>
 		</dependency>
 
+		<!-- Common Events Module -->
+		<dependency>
+			<groupId>com.resourcebridge</groupId>
+			<artifactId>common-events</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>

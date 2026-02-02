@@ -4,7 +4,10 @@ package com.resourcebridge.auth_service.controller;
 import com.resourcebridge.auth_service.advices.ApiResponse;
 import com.resourcebridge.auth_service.dtos.*;
 import com.resourcebridge.auth_service.dtos.UserResponseDto;
+
+import com.resourcebridge.auth_service.repository.UserRepository;
 import com.resourcebridge.auth_service.service.AuthService;
+import com.resourcebridge.auth_service.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtService jwtService;
+
 
     // signup
 
@@ -77,13 +82,24 @@ public class AuthController {
     @PutMapping("/admin/verify/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<String>> verifyUser(
-            @PathVariable Long userId) {
+            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authHeader) {
 
-        authService.verifyUser(userId);
+        // Extract token
+        String token = authHeader.substring(7);
+
+        // Get adminId from JWT
+        Long adminId = jwtService.extractUserId(token);
+
+        log.info("Admin verification | adminId={} | targetUserId={}",
+                adminId, userId);
+
+        authService.verifyUser(userId, adminId);
 
         return ResponseEntity.ok(
                 ApiResponse.success("User verified successfully")
         );
     }
+
 
 }
